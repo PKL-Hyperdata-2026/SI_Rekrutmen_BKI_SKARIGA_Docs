@@ -1,0 +1,23 @@
+---
+title: Gambaran Arsitektur
+description: Cara kerja dan pembagian layer antara backend Laravel 13 dan frontend React 19
+---
+
+Aplikasi ini dibangun dengan konsep **decoupled monorepo**: backend dan frontend berada di satu repositori tetapi berjalan sebagai dua aplikasi terpisah yang berkomunikasi lewat REST API dan WebSockets.
+
+<ArchitectureDiagram />
+
+## Bagaimana Komponen Saling Terhubung?
+
+1. **Frontend Client (SPA):** Dibangun dengan React 19, TypeScript, dan dibundel dengan Vite menggunakan runtime Bun. Semua state autentikasi disimpan di Redux Toolkit dan token Sanctum disimpan di `localStorage`. Antarmuka memakai Tailwind CSS v4 dan Shadcn UI dengan transisi halus yang hemat GPU (hanya `transform` dan `opacity`).
+2. **Komunikasi Antar Layanan:** Request HTTP dikirim via Axios terkonfigurasi tunggal ke base URL `/api`. Token Bearer disisipkan otomatis di header. Untuk notifikasi langsung tanpa refresh, browser berlangganan channel WebSocket via Laravel Reverb.
+3. **Backend API (Laravel 13):** Berjalan di atas runtime RoadRunner dan Laravel Octane. Request masuk melalui middleware untuk verifikasi token Sanctum, pemeriksaan role (RBAC), serta dekripsi ID sensitif.
+4. **Pemisahan Logika Bisnis:** Controller hanya bertugas menerima input dan mengarahkan panggilan ke Service class yang sesuai. Validasi parameter ditangani FormRequest terdedikasi, bukan validasi inline.
+5. **Database & Penyimpanan:** PostgreSQL menangani seluruh data relasional, riwayat tahapan seleksi, dan survei tracer study. Dokumen portofolio siswa (PDF, piagam, sertifikat kompetensi) serta surat penerimaan kerja disimpan di storage lokal terisolasi.
+
+## Prinsip yang Diterapkan di Kode
+
+- **Strict Types:** Semua berkas PHP diawali `declare(strict_types=1);` dan semua kode TypeScript wajib bertipe data jelas tanpa menggunakan `any`.
+- **Controller Ramping:** Logika query dan manipulasi data selalu berada di dalam `app/Services/`.
+- **Format Respons Konsisten:** Semua respons JSON dibungkus rapi oleh `ResponseService` agar frontend mudah memproses status sukses atau pesan error.
+- **Isolasi Data Perusahaan:** Akun HRD hanya bisa mengakses data lowongan, pelamar, dan jadwal tes milik perusahaannya sendiri (`company_id`).

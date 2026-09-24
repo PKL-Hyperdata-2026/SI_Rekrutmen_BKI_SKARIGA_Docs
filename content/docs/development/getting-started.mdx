@@ -1,0 +1,132 @@
+---
+title: Instalasi & Cara Menjalankan
+description: Panduan langkah demi langkah menjalankan backend, frontend, dan dokumentasi di komputer lokal
+---
+
+Halaman ini memandu kamu menyiapkan dan menjalankan seluruh layanan **SI Rekrutmen BKI SKARIGA** di lingkungan lokal (development).
+
+## Prasyarat Sebelum Mulai
+
+Pastikan alat-alat berikut sudah terpasang di komputer:
+
+- **PHP 8.3+** (pastikan ekstensi `pdo_pgsql`, `pgsql`, `mbstring`, `fileinfo` aktif di `php.ini`)
+- **Composer** (manajer paket PHP)
+- **PostgreSQL 15+** (berjalan di port default `5432`)
+- **Bun 1.3+** (runtime dan manajer paket JavaScript)
+
+---
+
+## 1. Setup Backend (Laravel 13 API)
+
+Buka terminal pertama, arahkan ke folder `backend`:
+
+```bash
+cd backend
+composer install
+copy .env.example .env
+php artisan key:generate
+```
+
+Buka berkas `.env`, lalu sesuaikan kredensial database PostgreSQL:
+
+```ini
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=si_rekrutmen_bki_skariga_db
+DB_USERNAME=postgres
+DB_PASSWORD=password_postgres_kamu
+```
+
+Jalankan migrasi tabel beserta seeder data awal:
+
+```bash
+php artisan migrate --seed
+```
+
+### Jalankan Backend (One-Line Command)
+Gunakan perintah satu baris berikut untuk langsung menjalankan server HTTP (`serve`), worker antrean email (`queue:work`), dan WebSocket real-time (`reverb:start`) sekaligus dalam satu terminal:
+
+```bash
+php artisan dev
+```
+
+Jika hanya ingin menjalankan HTTP server saja secara terpisah:
+
+```bash
+php artisan serve
+```
+
+Server backend berjalan di `http://localhost:8000`.
+
+---
+
+## 2. Setup Frontend (React 19 + Bun + Vite+)
+
+Buka terminal kedua, arahkan ke folder `frontend`:
+
+```bash
+cd frontend
+bun install
+copy .env.example .env
+```
+
+Pastikan isi `.env` di frontend mengarah ke backend lokal:
+
+```ini
+VITE_API_URL=http://localhost:8000/api
+VITE_BASE_URL=/
+VITE_PORT=5173
+```
+
+Jalankan development server menggunakan Bun dan engine **Vite+** (`vp dev`):
+
+```bash
+bun run dev
+```
+
+Server pengembangan Vite+ langsung aktif di `http://localhost:5173`.
+
+---
+
+## 3. Setup Dokumentasi (Fumadocs)
+
+Buka terminal ketiga untuk menjalankan situs dokumentasi ini:
+
+```bash
+cd documentation
+bun install
+bun run dev
+```
+
+Dokumentasi terbuka di `http://localhost:3000`.
+
+---
+
+## Ringkasan Perintah Jalankan Layanan
+
+| Layanan | Direktori | Perintah Jalankan | URL Akses / Keterangan |
+|---|---|---|---|
+| **Backend (One-Line All-in-One)** | `/backend` | `php artisan dev` | Server HTTP + Queue + WebSockets |
+| **Backend (HTTP Server Saja)** | `/backend` | `php artisan serve` | `http://localhost:8000` |
+| **Frontend SPA (Bun + Vite+)** | `/frontend` | `bun run dev` | `http://localhost:5173` |
+| **Dokumentasi (Fumadocs)** | `/documentation` | `bun run dev` | `http://localhost:3000` |
+
+---
+
+## Menjalankan Pengujian Otomatis
+
+Sebelum membuat pull request atau mengajukan commit, pastikan seluruh pengujian lulus:
+
+```bash
+# Uji seluruh test suite backend (Pest PHP)
+cd backend
+php artisan test
+
+# Uji seluruh test suite frontend (Vitest)
+cd frontend
+bun run test
+
+# Cek tipe TypeScript dan build bundle frontend
+bun run build
+```

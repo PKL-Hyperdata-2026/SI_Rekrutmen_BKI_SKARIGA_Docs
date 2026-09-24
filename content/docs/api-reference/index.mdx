@@ -1,0 +1,52 @@
+---
+title: Format & Standar API
+description: Standar format respons JSON, kode status HTTP, dan penanganan error
+---
+
+Semua endpoint API bisa diakses melalui base URL `/api`. Respons data selalu dikembalikan dalam format JSON terstruktur yang seragam menggunakan helper `ResponseService`.
+
+## Format Respons Sukses
+
+Untuk request yang berhasil (kode status 200 atau 201), data dikemas di dalam properti `data`:
+
+```json
+{
+  "success": true,
+  "message": "Data berhasil diambil.",
+  "data": {
+    "id": 1,
+    "name": "Operator Produksi"
+  }
+}
+```
+
+Jika datanya memiliki paginasi (misalnya daftar lowongan atau daftar pelamar), struktur `data` menyertakan array list dan informasi paginasi Laravel standar (`meta` dan `links`).
+
+## Format Respons Gagal / Error
+
+Jika terjadi kesalahan input atau kegagalan otorisasi (kode status 4xx atau 5xx), format respons menampilkan pesan yang jelas beserta rincian kesalahan per kolom:
+
+```json
+{
+  "success": false,
+  "message": "Validasi gagal.",
+  "data": null,
+  "errors": {
+    "email": [
+      "Format email tidak valid."
+    ]
+  }
+}
+```
+
+## Daftar Kode Status yang Sering Digunakan
+
+| Kode HTTP | Penjelasan Singkat |
+|---|---|
+| `200 OK` | Request berhasil diproses |
+| `201 Created` | Data baru sukses ditambahkan ke sistem |
+| `401 Unauthorized` | Belum login atau masa aktif token Sanctum habis |
+| `403 Forbidden` | Akun tidak memiliki izin untuk fitur atau data perusahaan ini |
+| `404 Not Found` | Data atau rute yang dicari tidak ada |
+| `422 Unprocessable` | Input formulir tidak lolos aturan validasi FormRequest |
+| `429 Too Many Requests` | Melebihi batas frekuensi request (rate limit) |

@@ -1,0 +1,30 @@
+---
+title: Endpoint Siswa & Alumni
+description: Spesifikasi endpoint untuk modul Siswa Aktif dan Alumni
+---
+
+Endpoint berikut diakses oleh pengguna dengan role `siswa` atau `alumni`.
+
+## Profil & E-Portofolio Mandiri (`/api/siswa/portfolio` & `/api/alumni/portfolio`)
+
+- `GET /api/siswa/portfolio/profile`: Mengambil data profil akademis, biodata, dan kontak.
+- `GET /api/siswa/portfolio/options`: Opsi dropdown kategori portofolio, keahlian, dan status.
+- `PUT /api/siswa/portfolio/profile`: Memperbarui biodata pribadi dan sosial media.
+- `POST /api/siswa/portfolio/upload`: Mengunggah berkas portofolio (sertifikat, piagam, CV) format PDF/gambar max 10MB.
+- `DELETE /api/siswa/portfolio/{id}`: Menghapus berkas portofolio.
+
+*(Alumni dapat mengakses rute padanan di `/api/alumni/portfolio/*`)*
+
+## Eksplorasi Lowongan & Pengajuan Lamaran (`/api/job-vacancies` & `/api/my-applications`)
+
+- `GET /api/job-vacancies`: Menampilkan lowongan pekerjaan aktif yang terbuka untuk jurusan dan status pelamar.
+- `GET /api/job-vacancies/options`: Opsi filter perusahaan, tipe pekerjaan, dan lokasi kerja.
+- `GET /api/job-vacancies/{id}`: Detail informasi lowongan kerja, kualifikasi, dan benefit.
+- `POST /api/job-vacancies/{id}/apply`: Mengajukan lamaran pada lowongan terkait (`ApplyJobVacancyRequest`).
+- `GET /api/my-applications`: Daftar seluruh lamaran yang diajukan beserta status tahapan terkini.
+- `GET /api/my-applications/{id}`: Detail lamaran, timeline progres tahapan seleksi, dan tautan surat penerimaan jika lolos.
+
+## Tracer Study Alumni (`/api/alumni/tracer-study`)
+
+- `GET /api/alumni/tracer-study`: Mengambil riwayat data survei penelusuran lulusan yang telah diisi.
+- `POST /api/alumni/tracer-study`: Menyimpan/memperbarui data tracer study (status kerja, institusi/perusahaan, gaji awal, masa tunggu).

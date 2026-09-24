@@ -1,0 +1,53 @@
+---
+title: Autentikasi & RBAC
+description: Mekanisme login, token Sanctum, dan kontrol akses berbasis peran
+---
+
+## 1. Alur Autentikasi
+
+Autentikasi menggunakan **Laravel Sanctum**. Client mengirimkan kredensial email dan password, kemudian backend mengembalikan personal access token.
+
+```text
+POST /api/login
+Headers: { "Content-Type": "application/json", "Accept": "application/json" }
+Body:
+{
+  "email": "user@example.com",
+  "password": "secretpassword"
+}
+```
+
+Respons berhasil menyertakan token:
+
+```json
+{
+  "success": true,
+  "message": "Login berhasil.",
+  "data": {
+    "token": "1|somerandomsanctumtokenstring",
+    "user": {
+      "id": 1,
+      "email": "user@example.com",
+      "fullName": "Nama Pengguna",
+      "role": "hrd"
+    }
+  }
+}
+```
+
+Token tersebut disimpan oleh frontend pada `localStorage` (`access_token`) dan disuntikkan secara otomatis melalui header HTTP di setiap request selanjutnya:
+`Authorization: Bearer <token>`
+
+## 2. Role-Based Access Control (RBAC)
+
+Sistem membedakan izin akses melalui middleware `role:{peran}`:
+
+| Role | Cakupan Izin |
+|---|---|
+| `superadmin` | Mengelola data user sistem, hak akses, reset password master, dan seluruh fitur Admin BKK |
+| `admin` | Mengelola data master siswa, alumni, departemen, jurusan, mitra DUDI, laporan, dan verifikasi presensi |
+| `hrd` | Mengelola lowongan perusahaan, review pelamar, jadwal tes, input nilai seleksi, dan penempatan |
+| `siswa` | Siswa aktif kelas 12: mengelola profil, portofolio digital, melihat lowongan, mengajukan lamaran |
+| `alumni` | Lulusan: mengelola profil, mengajukan lamaran lowongan alumni, dan mengisi tracer study |
+
+Middleware `RBAC` secara otomatis mengizinkan `superadmin` mengakses semua endpoint yang diproteksi `role:admin`.

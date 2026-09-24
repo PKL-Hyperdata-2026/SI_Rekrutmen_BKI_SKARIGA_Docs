@@ -1,0 +1,39 @@
+---
+title: Arsitektur Backend
+description: Struktur dan konvensi teknis backend Laravel 13 API
+---
+
+Backend SI Rekrutmen BKI SKARIGA dibangun di atas **Laravel 13** dan **PHP 8.3+** dengan runtime berkinerja tinggi **Laravel Octane (RoadRunner)**.
+
+## Teknologi Utama
+
+- **Framework:** Laravel 13
+- **Runtime:** RoadRunner & Laravel Octane
+- **Database:** PostgreSQL (`si_rekrutmen_bki_skariga_db`)
+- **Autentikasi:** Laravel Sanctum (Stateful / Bearer Token)
+- **Real-Time:** Laravel Reverb (`^1.0`) untuk event broadcasting
+- **Testing:** Pest PHP (`tests/Feature/` & `tests/Unit/`)
+
+## Struktur Direktori Backend
+
+```text
+backend/app/
+├── Events/              # Event real-time (NotificationSent)
+├── Helpers/             # Helper enkripsi AES-256-CBC
+├── Http/
+│   ├── Controllers/     # Thin controllers (Api/ & Auth/)
+│   ├── Middleware/      # RBAC, DecryptRequest
+│   ├── Requests/        # FormRequest validasi terpisah
+│   └── Resources/       # API JsonResource formatters
+├── Mail/                # Mailable templates (ResetPasswordMail, JobVacancyNotificationMail)
+├── Models/              # Eloquent models dengan attribute #[Fillable]
+└── Services/            # Business rules & database transactions
+```
+
+## Aturan Arsitektur Wajib
+
+1. **Service Pattern:** Dilarang meletakkan query database atau logika bisnis di dalam Controller. Semua diarahkan ke `app/Services/`.
+2. **Form Request Validation:** Dilarang melakukan inline validation (`$request->validate()`) di Controller. Selalu buat kelas FormRequest turunan di `app/Http/Requests/`.
+3. **API Resources:** Dilarang mengembalikan model Eloquent langsung ke client. Gunakan JsonResource di `app/Http/Resources/` dan bungkus dengan `ResponseService`.
+4. **Mass Assignment:** Model menggunakan attribute Laravel 13 `#[Fillable([...])]`.
+5. **Database Migration:** Dilarang mengedit migrasi lama yang sudah berjalan. Buat file migrasi baru untuk modifikasi skema.

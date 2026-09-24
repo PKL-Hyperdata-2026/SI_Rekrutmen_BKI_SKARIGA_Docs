@@ -1,0 +1,10 @@
+{
+  "title": "API Reference",
+  "pages": [
+    "index",
+    "auth-and-rbac",
+    "hrd-endpoints",
+    "student-endpoints",
+    "admin-endpoints"
+  ]
+}

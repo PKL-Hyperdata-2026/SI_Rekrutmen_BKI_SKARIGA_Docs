@@ -1,0 +1,42 @@
+---
+title: Endpoint Perusahaan (HRD)
+description: Spesifikasi endpoint untuk modul HRD perusahaan mitra
+---
+
+Semua endpoint berikut memerlukan header `Authorization: Bearer <token>` dengan akun ber-role `hrd` dan memiliki asosiasi data perusahaan (`company`).
+
+## Lowongan Kerja (`/api/hrd/job-vacancies`)
+
+- `GET /api/hrd/job-vacancies`: Daftar lowongan kerja milik perusahaan (terpaginasi + filter).
+- `GET /api/hrd/job-vacancies/statistics`: Statistik pelamar, kuota terisi, dan lowongan aktif.
+- `GET /api/hrd/job-vacancies/options`: Opsi dropdown kategori, jurusan, dan tipe pekerjaan.
+- `POST /api/hrd/job-vacancies`: Membuat lowongan baru (`StoreHrdJobVacancyRequest`).
+- `GET /api/hrd/job-vacancies/{id}`: Detail lowongan kerja.
+- `PUT /api/hrd/job-vacancies/{id}`: Memperbarui data lowongan kerja.
+- `PATCH /api/hrd/job-vacancies/{id}/toggle-active`: Mengubah status aktif/non-aktif lowongan.
+- `DELETE /api/hrd/job-vacancies/{id}`: Menghapus data lowongan kerja (soft delete).
+
+## Review Pelamar (`/api/hrd/applicant-reviews`)
+
+- `GET /api/hrd/applicant-reviews`: Daftar pelamar yang masuk pada lowongan perusahaan (filter lowongan, status review, pencarian nama/NIS).
+- `GET /api/hrd/applicant-reviews/options`: Opsi filter lowongan dan status.
+- `GET /api/hrd/applicant-reviews/{id}`: Detail pelamar, riwayat pendidikan, dan portofolio berkas.
+- `PATCH /api/hrd/applicant-reviews/{id}/review`: Keputusan seleksi administrasi (`decision: lolos | tidak_lolos`, `notes`).
+- `POST /api/hrd/applicant-reviews/bulk-review`: Keputusan seleksi administrasi massal (`application_ids: [...]`, `decision`, `notes`).
+
+## Agenda & Jadwal Tes (`/api/hrd/test-schedules`)
+
+- `GET /api/hrd/test-schedules`: Daftar agenda tes seleksi perusahaan.
+- `POST /api/hrd/test-schedules`: Membuat jadwal tes baru bagi pelamar yang lolos seleksi berkas.
+- `GET /api/hrd/test-schedules/{id}`: Detail jadwal tes.
+- `GET /api/hrd/test-schedules/{id}/participants`: Daftar peserta yang dialokasikan pada tes ini.
+- `POST /api/hrd/test-schedules/{id}/remind-all`: Mengirim notifikasi pengingat ke seluruh peserta tes.
+- `POST /api/hrd/test-schedules/{id}/participants/{participantId}/remind`: Mengirim pengingat ke peserta tertentu.
+
+## Hasil Seleksi & Penempatan (`/api/hrd/selection-results` & `/api/hrd/job-placements`)
+
+- `GET /api/hrd/selection-results`: Daftar evaluasi nilai peserta tes seleksi.
+- `POST /api/hrd/selection-results/{applicationId}`: Menyimpan skor psikotes, interview, MCU, nilai akhir, catatan, dan berkas surat keputusan (`StoreHrdSelectionResultRequest`).
+- `PATCH /api/hrd/selection-results/{applicationId}/decision`: Mengubah keputusan kelulusan peserta (`UpdateHrdSelectionDecisionRequest`).
+- `POST /api/hrd/selection-results/publish`: Mempublikasikan hasil seleksi final (`PublishHrdSelectionResultRequest`).
+- `GET /api/hrd/job-placements`: Daftar data siswa/alumni yang telah ditempatkan bekerja di perusahaan.

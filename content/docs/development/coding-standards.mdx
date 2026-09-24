@@ -1,0 +1,31 @@
+---
+title: Standar Penulisan Kode
+description: Konvensi penulisan kode, penamaan, dan arsitektur di seluruh codebase
+---
+
+## Konvensi Penamaan
+
+| Tipe | Format | Contoh |
+|---|---|---|
+| Variabel & Fungsi (PHP / TS) | `camelCase` | `getUserProfile()`, `isActive` |
+| Class (PHP / TS) | `PascalCase` | `JobVacancyService`, `UserResource` |
+| File Frontend | `kebab-case` | `login-form.tsx`, `lowongan-card.tsx` |
+| File Backend | `PascalCase.php` | `ApplicantReviewService.php` |
+| Tabel Database | `snake_case` (Plural) | `job_applications`, `companies` |
+| Kolom Database | `snake_case` (Singular) | `student_alumni_id`, `applied_at` |
+
+## Konvensi Backend
+
+1. **Strict Types:** Wajib menyertakan `declare(strict_types=1);` di baris pertama setiap file PHP.
+2. **Thin Controller:** Controller dilarang memuat query database atau logika bisnis. Panggil method di `app/Services/`.
+3. **Form Request:** Validasi parameter wajib melalui FormRequest terdedikasi (`app/Http/Requests/`). Jangan gunakan `$request->validate()` inline.
+4. **API Resources:** Data yang dikembalikan ke client harus melalui `app/Http/Resources/` yang dibungkus oleh `ResponseService`.
+5. **No Inline Comments:** Jangan menambahkan komentar penjelasan yang berlebihan di dalam kode, pertahankan kode bersih dan terbaca (self-documenting).
+
+## Konvensi Frontend
+
+1. **No Any:** Wajib mendeklarasikan tipe eksplisit (interface atau type) untuk semua props komponen, state, dan payload API.
+2. **Modularisasi Fitur:** Simpan kode fitur di `src/features/{role}/{feature}/`.
+3. **Axios Client Tunggal:** Seluruh request HTTP wajib melalui instance sentral di `src/api/axios.ts`. Jangan gunakan `fetch()` mentah atau membuat instance Axios baru.
+4. **UI Motion:** Gunakan token easing `--ease-out`, `--ease-drawer`, dan batasi transisi hanya pada properti `transform` dan `opacity`.
+5. **Sanitasi HTML:** Setiap rendering HTML dinamis dari rich-text wajib disanitasi menggunakan `DOMPurify.sanitize()`.

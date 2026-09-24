@@ -1,0 +1,56 @@
+---
+title: Panduan Pengujian (Testing)
+description: Panduan pengujian otomatis menggunakan Pest PHP dan Vitest
+---
+
+## Pengujian Backend (Pest PHP)
+
+Backend dilengkapi dengan pengujian fitur (Feature Tests) dan pengujian unit (Unit Tests) berbasis **Pest PHP**:
+
+```bash
+cd backend
+php artisan test
+```
+
+Untuk menjalankan pengujian tertentu atau pengujian modul fitur:
+
+```bash
+# Uji seluruh modul review pelamar
+php artisan test --filter=HrdApplicantReviewTest
+
+# Uji notifikasi hasil seleksi berkas
+php artisan test --filter=HrdApplicantReviewNotificationTest
+
+# Uji modul lowongan kerja
+php artisan test --filter=HrdJobVacancyTest
+
+# Uji modul jadwal tes
+php artisan test --filter=HrdTestScheduleTest
+```
+
+Setiap perubahan logika bisnis baru wajib menyertakan unit/feature test sebelum dianggap selesai (Definition of Done).
+
+## Pengujian Frontend (Vitest)
+
+Frontend menggunakan **Vitest** untuk pengujian unit komponen dan logika hook:
+
+```bash
+cd frontend
+bun run test
+```
+
+Untuk pengujian mode watch saat pengembangan aktif:
+
+```bash
+bun run test:watch
+```
+
+## Validasi Build & Tipe
+
+Sebelum mengajukan perubahan ke branch `development`, pastikan build frontend lulus tanpa kesalahan tipe:
+
+```bash
+cd frontend
+bun run build
+bun run lint
+```

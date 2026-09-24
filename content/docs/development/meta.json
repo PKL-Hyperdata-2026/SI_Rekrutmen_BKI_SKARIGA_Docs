@@ -1,0 +1,9 @@
+{
+  "title": "Panduan Pengembangan",
+  "pages": [
+    "index",
+    "getting-started",
+    "coding-standards",
+    "testing"
+  ]
+}

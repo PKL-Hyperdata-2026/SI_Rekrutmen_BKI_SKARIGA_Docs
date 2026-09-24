@@ -1,0 +1,29 @@
+---
+title: Publikasi Lowongan & Pengajuan Lamaran
+description: Proses pembuatan lowongan oleh HRD hingga pengajuan lamaran oleh siswa/alumni
+---
+
+## 1. Pembuatan Lowongan Kerja oleh HRD
+
+Perusahaan mitra dapat menginput lowongan kerja secara mandiri melalui portal HRD:
+
+- **Atribut Lowongan:** Judul, posisi, kuota penerimaan, batas pendaftaran, lokasi penempatan kerja, jenis pekerjaan (full-time, kontrak, magang), serta kualifikasi.
+- **Sasaran Pelamar:**
+  - `class_12_only`: Khusus siswa aktif tingkat akhir.
+  - `alumni_only`: Khusus lulusan / alumni.
+  - `all`: Terbuka bagi siswa kelas 12 maupun alumni.
+- **Filter Jurusan:** Pembatasan jurusan vokasi yang relevan (misal: Rekayasa Perangkat Lunak, Teknik Kendaraan Ringan, dll).
+
+## 2. Notifikasi Otomatis
+
+Ketika lowongan berstatus diterbitkan (`published`):
+- Sistem mengeksekusi `JobVacancyService::notifyTargetApplicants()`.
+- Mengirimkan email notifikasi (`JobVacancyNotificationMail`) ke kotak masuk pengguna yang memenuhi kualifikasi.
+- Memancarkan notifikasi in-app real-time melalui WebSocket Laravel Reverb.
+
+## 3. Pengajuan Lamaran oleh Siswa/Alumni
+
+Siswa dan alumni dapat mengeksplorasi lowongan yang terbuka di portal siswa:
+- Sistem memvalidasi kesesuaian jurusan dan role pelamar terhadap kriteria lowongan.
+- Pelamar memastikan data profil dan berkas E-Portofolio (CV, sertifikat kompetensi, piagam penghargaan, transkrip nilai) telah lengkap.
+- Mengirim lamaran dengan status awal `pending` (menunggu verifikasi berkas).
