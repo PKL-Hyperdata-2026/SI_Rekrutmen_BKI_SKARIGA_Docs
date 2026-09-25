@@ -1,0 +1,29 @@
+---
+title: Job Vacancy Publishing & Application Submission
+description: The process from HRD creating a vacancy to students/alumni submitting applications
+---
+
+## 1. Job Vacancy Creation by HRD
+
+Partner companies can post job vacancies independently through the HRD portal:
+
+- **Vacancy Attributes:** Title, position, intake quota, registration deadline, work placement location, employment type (full-time, contract, internship), and qualifications.
+- **Applicant Target:**
+  - `class_12_only`: Exclusively for active final-year students.
+  - `alumni_only`: Exclusively for graduates / alumni.
+  - `all`: Open to both grade 12 students and alumni.
+- **Major Filter:** Restriction to relevant vocational majors (e.g., Software Engineering, Light Vehicle Engineering, etc.).
+
+## 2. Automatic Notifications
+
+When a vacancy has the published status (`published`):
+- The system runs `JobVacancyService::notifyTargetApplicants()`.
+- It sends a notification email (`JobVacancyNotificationMail`) to the inbox of users who meet the qualifications.
+- It emits a real-time in-app notification over the Laravel Reverb WebSocket.
+
+## 3. Application Submission by Students/Alumni
+
+Students and alumni can browse open vacancies in the student portal:
+- The system validates that the applicant's major and role match the vacancy criteria.
+- The applicant ensures their profile data and E-Portfolio documents (CV, competency certificates, award certificates, academic transcript) are complete.
+- Submits the application with an initial `pending` status (awaiting document verification).

@@ -1,0 +1,39 @@
+---
+title: BKI & Superadmin Admin Endpoints
+description: Endpoint specifications for the BKI Administrator and Superadmin modules
+---
+
+The following endpoints are accessed by accounts with the `admin` or `superadmin` role.
+
+## School & Partner Company Master Data
+
+- `/api/admin/students`: CRUD for grade 12 active student master data.
+- `/api/admin/alumni`: CRUD for alumni master data (including the feature to upgrade a student to alumni).
+- `/api/admin/companies`: CRUD for partner company data and an active status toggle.
+- `/api/admin/departments`: CRUD for vocational department data.
+- `/api/admin/majors`: CRUD for competency / major data.
+
+## Selection & Attendance Monitoring
+
+- `GET /api/admin/recruitment-selections`: View-only recap of selection progress across all job vacancies.
+- `GET /api/admin/attendances/queue`: Queue of attendance records for selection test participants awaiting validation by BKI staff.
+- `GET /api/admin/attendances/history`: Attendance history for participants that have been validated.
+- `PATCH /api/admin/attendances/{id}/validate`: Validate attendance for a single participant.
+- `PATCH /api/admin/attendances/bulk-validate`: Bulk attendance validation.
+
+## Report Recapitulation (`/api/admin/reports`)
+
+- `GET /api/admin/reports/options`: Filter options for academic year, major, and date range.
+- `GET /api/admin/reports/recruitment`: Statistical report on recruitment and pass rate per company.
+- `GET /api/admin/reports/attendance`: Report on selection participant attendance rates.
+- `GET /api/admin/reports/absorption`: Report on job absorption for grade 12 students and alumni.
+- `GET /api/admin/reports/tracer-study`: Tracer study report, waiting period, and distribution of work locations.
+
+## User Management (`/api/admin/users`) *(Superadmin Only)*
+
+- `GET /api/admin/users`: List of user accounts (students, alumni, HRD, admin).
+- `POST /api/admin/users`: Create a new account.
+- `PUT /api/admin/users/{id}`: Update account information.
+- `PATCH /api/admin/users/{id}/toggle-active`: Activate / deactivate a user account.
+- `POST /api/admin/users/{id}/reset-password`: Manual password reset by a Superadmin.
+- `DELETE /api/admin/users/{id}`: Delete a user account.

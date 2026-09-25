@@ -1,0 +1,53 @@
+---
+title: Authentication & RBAC
+description: Login mechanism, Sanctum tokens, and role-based access control
+---
+
+## 1. Authentication Flow
+
+Authentication uses **Laravel Sanctum**. The client submits email and password credentials, and the backend returns a personal access token.
+
+```text
+POST /api/login
+Headers: { "Content-Type": "application/json", "Accept": "application/json" }
+Body:
+{
+  "email": "user@example.com",
+  "password": "secretpassword"
+}
+```
+
+A successful response includes the token:
+
+```json
+{
+  "success": true,
+  "message": "Login berhasil.",
+  "data": {
+    "token": "1|somerandomsanctumtokenstring",
+    "user": {
+      "id": 1,
+      "email": "user@example.com",
+      "fullName": "Nama Pengguna",
+      "role": "hrd"
+    }
+  }
+}
+```
+
+The frontend stores this token in `localStorage` (`access_token`) and injects it automatically through an HTTP header on every subsequent request:
+`Authorization: Bearer <token>`
+
+## 2. Role-Based Access Control (RBAC)
+
+The system separates access permissions through the `role:{role}` middleware:
+
+| Role | Permission Scope |
+|---|---|
+| `superadmin` | Manages system user data, access rights, master password resets, and every BKI Admin feature |
+| `admin` | Manages master data for students, alumni, departments, majors, partner companies, reports, and attendance verification |
+| `hrd` | Manages company job vacancies, applicant reviews, test schedules, selection score entry, and placement |
+| `siswa` | Active grade 12 students: manage their profile and digital portfolio, view job vacancies, and submit applications |
+| `alumni` | Graduates: manage their profile, apply for alumni job vacancies, and complete tracer study |
+
+The `RBAC` middleware automatically allows `superadmin` to access every endpoint protected by `role:admin`.

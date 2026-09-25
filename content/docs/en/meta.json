@@ -1,0 +1,11 @@
+{
+  "title": "Documentation",
+  "pages": [
+    "index",
+    "architecture",
+    "business-flow",
+    "api-reference",
+    "development",
+    "contributor"
+  ]
+}

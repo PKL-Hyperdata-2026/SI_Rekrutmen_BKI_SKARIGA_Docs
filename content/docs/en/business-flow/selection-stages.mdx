@@ -1,0 +1,34 @@
+---
+title: Document Screening, Tests, & Result Evaluation
+description: The document review flow, test scheduling, and selection result announcements
+---
+
+## 1. Administrative Document Screening
+
+HRD reviews incoming applicants through the **Applicant Review** module:
+- HRD views the complete profile, education history, and PDF portfolio documents.
+- **Decision `lolos`:** The application status moves to `in_progress`. The applicant is eligible for the follow-up test stage.
+- **Decision `tidak_lolos`:** The application status changes to `rejected`. The system automatically sends the applicant an administrative screening rejection notification (`admin_review_failed`) along with the evaluation notes.
+
+## 2. Test Scheduling & Reminders
+
+For applicants who pass document screening:
+- HRD creates the test agenda (psychotest, written test, vocational practical test, or interview).
+- Sets the date, time, venue, and minimum passing score.
+- The system sends the schedule notification (`test_schedule`) to all participants.
+- The **Remind All / Remind Participant** feature lets HRD trigger schedule reminder messages ahead of the test day.
+
+## 3. Attendance Validation
+
+- The BKI admin at the school manages the queue list of applicant attendance at the test venue.
+- Staff validate participant attendance to ensure only those present are processed to the next evaluation stage.
+
+## 4. Selection Result Evaluation & Final Decision
+
+Once the tests and interviews are complete, HRD inputs the evaluation scores:
+- Score components: Psychotest Score, Interview Score, MCU Score, and Final Score.
+- The decision letter / placement letter can be uploaded as a PDF or image.
+- **Selection Result Publication:**
+  - `diterima`: The applicant receives a passing notification (`selection_passed`), can download the announcement letter, and the data is forwarded to the Job Placement module.
+  - `tidak_diterima`: The applicant receives a final selection failure notification (`selection_failed`).
+  - `cadangan`: Waitlist status in case a slot holder withdraws.

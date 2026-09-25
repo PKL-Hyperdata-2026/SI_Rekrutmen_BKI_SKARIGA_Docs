@@ -1,0 +1,42 @@
+---
+title: Company Endpoints (HRD)
+description: Endpoint specification for the partner company HRD module
+---
+
+All of the following endpoints require an `Authorization: Bearer <token>` header, using an account with the `hrd` role that is linked to a company record (`company`).
+
+## Job Vacancies (`/api/hrd/job-vacancies`)
+
+- `GET /api/hrd/job-vacancies`: List of job vacancies belonging to the company (paginated + filters).
+- `GET /api/hrd/job-vacancies/statistics`: Statistics on applicants, filled quotas, and active job vacancies.
+- `GET /api/hrd/job-vacancies/options`: Dropdown options for categories, majors, and job types.
+- `POST /api/hrd/job-vacancies`: Create a new job vacancy (`StoreHrdJobVacancyRequest`).
+- `GET /api/hrd/job-vacancies/{id}`: Job vacancy details.
+- `PUT /api/hrd/job-vacancies/{id}`: Update job vacancy data.
+- `PATCH /api/hrd/job-vacancies/{id}/toggle-active`: Toggle a job vacancy between active and inactive.
+- `DELETE /api/hrd/job-vacancies/{id}`: Delete a job vacancy (soft delete).
+
+## Applicant Reviews (`/api/hrd/applicant-reviews`)
+
+- `GET /api/hrd/applicant-reviews`: List of applicants who applied to the company's job vacancies (filter by job vacancy, review status, or search by name/NIS).
+- `GET /api/hrd/applicant-reviews/options`: Filter options for job vacancy and status.
+- `GET /api/hrd/applicant-reviews/{id}`: Applicant details, education history, and document portfolio.
+- `PATCH /api/hrd/applicant-reviews/{id}/review`: Administrative selection decision (`decision: lolos | tidak_lolos`, `notes`).
+- `POST /api/hrd/applicant-reviews/bulk-review`: Bulk administrative selection decisions (`application_ids: [...]`, `decision`, `notes`).
+
+## Test Agenda & Schedules (`/api/hrd/test-schedules`)
+
+- `GET /api/hrd/test-schedules`: List of the company's selection test agendas.
+- `POST /api/hrd/test-schedules`: Create a new test schedule for applicants who passed the document selection.
+- `GET /api/hrd/test-schedules/{id}`: Test schedule details.
+- `GET /api/hrd/test-schedules/{id}/participants`: List of participants allocated to this test.
+- `POST /api/hrd/test-schedules/{id}/remind-all`: Send a reminder notification to all test participants.
+- `POST /api/hrd/test-schedules/{id}/participants/{participantId}/remind`: Send a reminder to a specific participant.
+
+## Selection Results & Placement (`/api/hrd/selection-results` & `/api/hrd/job-placements`)
+
+- `GET /api/hrd/selection-results`: List of score evaluations for selection test participants.
+- `POST /api/hrd/selection-results/{applicationId}`: Save psychotest, interview, and MCU scores, the final score, notes, and the decision letter document (`StoreHrdSelectionResultRequest`).
+- `PATCH /api/hrd/selection-results/{applicationId}/decision`: Change a participant's pass/fail decision (`UpdateHrdSelectionDecisionRequest`).
+- `POST /api/hrd/selection-results/publish`: Publish the final selection results (`PublishHrdSelectionResultRequest`).
+- `GET /api/hrd/job-placements`: List of students/alumni who have been placed in jobs at the company.

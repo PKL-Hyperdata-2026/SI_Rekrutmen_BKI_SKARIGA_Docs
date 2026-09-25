@@ -1,11 +1,27 @@
+import { i18n } from './i18n';
+import { uiTranslations } from 'fumadocs-ui/i18n';
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
-import { appName, gitConfig } from './shared';
+import { SITE_NAME } from './site';
+import { NavControls } from '@/components/nav-controls';
 
-export function baseOptions(): BaseLayoutProps {
+export const translations = i18n.translations().extend(uiTranslations()).add({
+  en: {
+    displayName: 'English',
+  },
+  id: {
+    displayName: 'Bahasa Indonesia',
+  },
+});
+
+export function baseOptions(locale: string): BaseLayoutProps {
   return {
     nav: {
-      title: 'Sistem Informasi Rekrutmen BKI SKARIGA',
+      title: SITE_NAME,
+      url: `/${locale}`,
     },
     githubUrl: `https://github.com/orgs/PKL-Hyperdata-2026/repositories`,
+    slots: {
+      themeSwitch: NavControls,
+    },
   };
 }

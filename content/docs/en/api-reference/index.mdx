@@ -1,0 +1,52 @@
+---
+title: API Format & Standards
+description: Standard JSON response format, HTTP status codes, and error handling
+---
+
+Every API endpoint is reachable through the `/api` base URL. Data responses are always returned in a consistent, structured JSON format produced by the `ResponseService` helper.
+
+## Success Response Format
+
+For successful requests (status code 200 or 201), the data is wrapped inside a `data` property:
+
+```json
+{
+  "success": true,
+  "message": "Data berhasil diambil.",
+  "data": {
+    "id": 1,
+    "name": "Operator Produksi"
+  }
+}
+```
+
+When the data is paginated (for example, a list of job vacancies or a list of applicants), the `data` structure includes a list array plus Laravel's standard pagination information (`meta` and `links`).
+
+## Failure / Error Response Format
+
+When an input error or an authorization failure occurs (status code 4xx or 5xx), the response format presents a clear message along with per-field error details:
+
+```json
+{
+  "success": false,
+  "message": "Validasi gagal.",
+  "data": null,
+  "errors": {
+    "email": [
+      "Format email tidak valid."
+    ]
+  }
+}
+```
+
+## Commonly Used Status Codes
+
+| HTTP Code | Brief Description |
+|---|---|
+| `200 OK` | The request was processed successfully |
+| `201 Created` | A new record was added to the system successfully |
+| `401 Unauthorized` | The user is not logged in, or the Sanctum token has expired |
+| `403 Forbidden` | The account does not have permission for this feature or partner company's data |
+| `404 Not Found` | The requested record or route does not exist |
+| `422 Unprocessable` | The form input failed the FormRequest validation rules |
+| `429 Too Many Requests` | The request frequency limit (rate limit) was exceeded |

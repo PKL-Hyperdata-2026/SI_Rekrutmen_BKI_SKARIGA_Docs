@@ -1,0 +1,56 @@
+---
+title: Testing Guide
+description: Automated testing guide using Pest PHP and Vitest
+---
+
+## Backend Testing (Pest PHP)
+
+The backend ships with feature tests and unit tests built on **Pest PHP**:
+
+```bash
+cd backend
+php artisan test
+```
+
+To run a specific test or the tests for a single feature module:
+
+```bash
+# Test the entire applicant review module
+php artisan test --filter=HrdApplicantReviewTest
+
+# Test the document selection result notification
+php artisan test --filter=HrdApplicantReviewNotificationTest
+
+# Test the job vacancy module
+php artisan test --filter=HrdJobVacancyTest
+
+# Test the test schedule module
+php artisan test --filter=HrdTestScheduleTest
+```
+
+Any change to business logic must come with a unit or feature test before it counts as done (Definition of Done).
+
+## Frontend Testing (Vitest)
+
+The frontend uses **Vitest** for component unit tests and hook logic tests:
+
+```bash
+cd frontend
+bun run test
+```
+
+For watch mode during active development:
+
+```bash
+bun run test:watch
+```
+
+## Build & Type Validation
+
+Before submitting changes to the `development` branch, make sure the frontend build passes with no type errors:
+
+```bash
+cd frontend
+bun run build
+bun run lint
+```
