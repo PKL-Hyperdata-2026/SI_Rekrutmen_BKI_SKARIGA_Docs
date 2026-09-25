@@ -19,6 +19,7 @@ import {
   CodeBlockTitle,
 } from '@/components/ai-elements/code-block';
 import { GithubIcon } from '@/components/icons/icons';
+import { MobileNavControls } from '@/components/nav-controls';
 import { HOME_COPY, QUICK_START } from '@/lib/home-copy';
 import { i18n } from '@/lib/i18n';
 
@@ -41,6 +42,10 @@ export default async function HomePage(props: PageProps<'/[lang]'>) {
       />
 
       <div className="flex flex-col items-center pt-8 pb-12 text-center">
+        <div className="mb-6 flex w-full justify-end">
+          <MobileNavControls />
+        </div>
+
         <h1 className="max-w-4xl text-4xl font-extrabold leading-[1.15] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
           {copy.heading}
         </h1>
@@ -67,7 +72,7 @@ export default async function HomePage(props: PageProps<'/[lang]'>) {
             render={<Link href="https://github.com/orgs/PKL-Hyperdata-2026/repositories" />}
             className="cursor-pointer"
           >
-            <GithubIcon />
+            <GithubIcon className="text-white dark:text-black" />
             {copy.starGithub}
             <ArrowUpRight />
           </Button>

@@ -140,3 +140,14 @@ figure div button svg,
 aside div button {
   cursor: pointer;
 }
+
+button:not(:disabled),
+[role='button']:not([aria-disabled='true']),
+[role='radio']:not(:disabled),
+[role='tab']:not(:disabled),
+summary,
+label[for],
+select:not(:disabled),
+a[href] {
+  cursor: pointer;
+}
