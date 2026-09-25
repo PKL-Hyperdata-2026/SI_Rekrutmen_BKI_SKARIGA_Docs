@@ -1,0 +1,30 @@
+---
+title: Student & Alumni Endpoints
+description: Endpoint specification for the active student and alumni modules
+---
+
+The following endpoints are accessed by users with the `siswa` or `alumni` role.
+
+## Self-Service Profile & E-Portfolio (`/api/siswa/portfolio` & `/api/alumni/portfolio`)
+
+- `GET /api/siswa/portfolio/profile`: Retrieve academic profile data, personal details, and contact information.
+- `GET /api/siswa/portfolio/options`: Dropdown options for portfolio categories, skills, and status.
+- `PUT /api/siswa/portfolio/profile`: Update personal details and social media.
+- `POST /api/siswa/portfolio/upload`: Upload portfolio documents (certificates, awards, CV) in PDF/image format, max 10MB.
+- `DELETE /api/siswa/portfolio/{id}`: Delete a portfolio document.
+
+*(Alumni can access the equivalent routes at `/api/alumni/portfolio/*`)*
+
+## Job Vacancy Browsing & Applications (`/api/job-vacancies` & `/api/my-applications`)
+
+- `GET /api/job-vacancies`: List active job vacancies open to the applicant's major and status.
+- `GET /api/job-vacancies/options`: Filter options for company, job type, and work location.
+- `GET /api/job-vacancies/{id}`: Job vacancy details, qualifications, and benefits.
+- `POST /api/job-vacancies/{id}/apply`: Submit an application for the given job vacancy (`ApplyJobVacancyRequest`).
+- `GET /api/my-applications`: List of all submitted applications with their current stage status.
+- `GET /api/my-applications/{id}`: Application details, selection stage progress timeline, and a link to the acceptance letter if the applicant passed.
+
+## Alumni Tracer Study (`/api/alumni/tracer-study`)
+
+- `GET /api/alumni/tracer-study`: Retrieve the history of submitted graduate tracer survey data.
+- `POST /api/alumni/tracer-study`: Create or update tracer study data (employment status, institution/company, starting salary, waiting period).

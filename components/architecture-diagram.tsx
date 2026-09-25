@@ -1,4 +1,6 @@
-import React from 'react';
+'use client';
+
+import { useParams } from 'next/navigation';
 import {
   Server,
   Globe,
@@ -7,14 +9,12 @@ import {
   ShieldCheck,
   CheckCircle2,
 } from 'lucide-react';
+import { ARCHITECTURE_COPY, type TechCardCopy } from '@/lib/diagram-copy';
+import { i18n } from '@/lib/i18n';
 
-interface TechCardProps {
+interface TechCardProps extends TechCardCopy {
   icon: React.ComponentType<{ className?: string }>;
   iconColor: string;
-  title: string;
-  subtitle: string;
-  description: string;
-  tags: string[];
   className?: string;
 }
 
@@ -29,12 +29,12 @@ function TechCard({
 }: TechCardProps) {
   return (
     <div
-      className={`rounded-2xl border border-border bg-card/60 p-5 sm:p-6 flex flex-col justify-between hover:border-border/80 transition-colors ${className}`}
+      className={`flex flex-col justify-between rounded-2xl border border-border bg-card/60 p-5 transition-colors hover:border-border/80 sm:p-6 ${className}`}
     >
       <div>
-        <div className="flex items-center gap-3 mb-3">
+        <div className="mb-3 flex items-center gap-3">
           <div
-            className={`size-9 rounded-xl flex items-center justify-center font-bold ${iconColor}`}
+            className={`flex size-9 items-center justify-center rounded-xl font-bold ${iconColor}`}
           >
             <Icon className="size-4.5" />
           </div>
@@ -43,16 +43,14 @@ function TechCard({
             <p className="text-xs text-muted-foreground">{subtitle}</p>
           </div>
         </div>
-        <p className="text-xs text-muted-foreground leading-relaxed mb-4">
-          {description}
-        </p>
+        <p className="mb-4 text-xs leading-relaxed text-muted-foreground">{description}</p>
       </div>
 
-      <div className="flex flex-wrap gap-1.5 pt-2 border-t border-border/50">
+      <div className="flex flex-wrap gap-1.5 border-t border-border/50 pt-2">
         {tags.map((tag) => (
           <span
             key={tag}
-            className="text-[11px] px-2 py-0.5 rounded-md bg-muted text-muted-foreground font-medium"
+            className="rounded-md bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground"
           >
             {tag}
           </span>
@@ -63,63 +61,49 @@ function TechCard({
 }
 
 export function ArchitectureDiagram() {
+  const params = useParams<{ lang?: string }>();
+  const lang = params?.lang ?? i18n.defaultLanguage;
+  const copy = ARCHITECTURE_COPY[lang] ?? ARCHITECTURE_COPY[i18n.defaultLanguage];
+
   return (
-    <div className="not-prose my-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="not-prose my-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
       <TechCard
         className="lg:col-span-2"
         icon={Server}
         iconColor="bg-indigo-500/10 text-indigo-500"
-        title="Backend API"
-        subtitle="Laravel • PHP 8.3+"
-        description="REST API engine untuk menangani business logic, routing, dan validasi data terpusat."
-        tags={['Laravel', 'Laravel Octane', 'REST API']}
+        {...copy.backend}
       />
 
       <TechCard
         icon={Radio}
         iconColor="bg-emerald-500/10 text-emerald-500"
-        title="Real-Time Service"
-        subtitle="Laravel Reverb"
-        description="Broadcasting WebSocket untuk pengiriman notifikasi dan pembaruan data secara real-time tanpa polling."
-        tags={['WebSockets', 'Laravel Echo']}
+        {...copy.realtime}
       />
 
       <TechCard
         className="lg:col-span-2"
         icon={Globe}
         iconColor="bg-sky-500/10 text-sky-500"
-        title="Frontend Application"
-        subtitle="React • TypeScript • Vite+"
-        description="SPA terstruktur berdasarkan peran pengguna (auth, student, hrd, admin) dengan Tailwind CSS."
-        tags={['React', 'TypeScript', 'Tailwind CSS', 'Vite']}
+        {...copy.frontend}
       />
 
       <TechCard
         icon={Database}
         iconColor="bg-amber-500/10 text-amber-500"
-        title="Database & Storage"
-        subtitle="PostgreSQL"
-        description="Penyimpanan relasional dengan indexing terstruktur dan manajemen file berkas terisolasi."
-        tags={['PostgreSQL', 'Disk Storage']}
+        {...copy.database}
       />
 
       <TechCard
         icon={ShieldCheck}
         iconColor="bg-rose-500/10 text-rose-500"
-        title="Autentikasi & RBAC"
-        subtitle="Laravel Sanctum"
-        description="Manajemen autentikasi token Bearer dan kontrol akses berbasis role untuk multi-entitas."
-        tags={['Sanctum', 'RBAC']}
+        {...copy.auth}
       />
 
       <TechCard
         className="lg:col-span-2"
         icon={CheckCircle2}
         iconColor="bg-violet-500/10 text-violet-500"
-        title="Testing Suite"
-        subtitle="Pest PHP • Vitest"
-        description="Pengujian fungsional end-to-end untuk API backend dan verifikasi logika komponen frontend."
-        tags={['Pest PHP', 'Vitest']}
+        {...copy.testing}
       />
     </div>
   );

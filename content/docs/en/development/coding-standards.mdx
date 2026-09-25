@@ -1,0 +1,31 @@
+---
+title: Coding Standards
+description: Code conventions, naming, and architecture across the codebase
+---
+
+## Naming Conventions
+
+| Type | Format | Example |
+|---|---|---|
+| Variables & Functions (PHP / TS) | `camelCase` | `getUserProfile()`, `isActive` |
+| Classes (PHP / TS) | `PascalCase` | `JobVacancyService`, `UserResource` |
+| Frontend Files | `kebab-case` | `login-form.tsx`, `lowongan-card.tsx` |
+| Backend Files | `PascalCase.php` | `ApplicantReviewService.php` |
+| Database Tables | `snake_case` (Plural) | `job_applications`, `companies` |
+| Database Columns | `snake_case` (Singular) | `student_alumni_id`, `applied_at` |
+
+## Backend Conventions
+
+1. **Strict Types:** Every PHP file must include `declare(strict_types=1);` on its first line.
+2. **Thin Controllers:** Controllers must not contain database queries or business logic. Call methods in `app/Services/`.
+3. **Form Requests:** Parameter validation must go through a dedicated FormRequest (`app/Http/Requests/`). Do not use inline `$request->validate()`.
+4. **API Resources:** Data returned to the client must pass through `app/Http/Resources/`, wrapped by `ResponseService`.
+5. **No Inline Comments:** Do not add excessive explanatory comments inside the code; keep the code clean and readable (self-documenting).
+
+## Frontend Conventions
+
+1. **No Any:** Explicit types (interface or type) are required for all component props, state, and API payloads.
+2. **Feature Modularization:** Keep feature code in `src/features/{role}/{feature}/`.
+3. **Single Axios Client:** All HTTP requests must go through the central instance in `src/api/axios.ts`. Do not use raw `fetch()` or create new Axios instances.
+4. **UI Motion:** Use the `--ease-out` and `--ease-drawer` easing tokens, and restrict transitions to the `transform` and `opacity` properties only.
+5. **HTML Sanitization:** Every dynamic HTML render from rich text must be sanitized using `DOMPurify.sanitize()`.

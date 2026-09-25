@@ -1,0 +1,34 @@
+---
+title: Seleksi Berkas, Tes, & Evaluasi Hasil
+description: Alur review berkas, penjadwalan tes, dan pengumuman hasil seleksi
+---
+
+## 1. Seleksi Berkas Administrasi
+
+HRD meninjau pelamar yang masuk melalui modul **Review Pelamar**:
+- HRD melihat profil lengkap, riwayat pendidikan, dan berkas portofolio PDF.
+- **Keputusan `lolos`:** Status lamaran beralih ke `in_progress`. Pelamar berhak diikutsertakan dalam agenda tes lanjutan.
+- **Keputusan `tidak_lolos`:** Status lamaran diubah menjadi `rejected`. Sistem otomatis mengirimkan notifikasi penolakan seleksi administrasi (`admin_review_failed`) kepada pelamar dengan catatan evaluasi.
+
+## 2. Penjadwalan Tes & Pengingat (Reminder)
+
+Bagi pelamar yang lolos seleksi berkas:
+- HRD membuat agenda tes (psikotes, tes tertulis, tes praktik kejuruan, atau interview).
+- Menentukan tanggal, jam, lokasi pelaksanaan, serta batas nilai minimal.
+- Sistem mengirimkan notifikasi jadwal (`test_schedule`) ke seluruh peserta.
+- Fitur **Remind All / Remind Participant** memungkinkan HRD memicu pesan pengingat jadwal menjelang hari pelaksanaan.
+
+## 3. Validasi Kehadiran
+
+- Admin BKI di sekolah mengelola daftar antrean kehadiran pelamar di lokasi tes.
+- Kehadiran peserta divalidasi oleh petugas untuk memastikan hanya peserta yang hadir yang diproses ke tahap evaluasi berikutnya.
+
+## 4. Evaluasi Hasil Seleksi & Keputusan Akhir
+
+Setelah tes dan wawancara selesai, HRD menginput nilai evaluasi:
+- Komponen skor: Skor Psikotes, Skor Wawancara, Skor MCU, dan Skor Akhir.
+- Surat keputusan / placement letter dapat diunggah dalam format PDF atau gambar.
+- **Publikasi Hasil Seleksi:**
+  - `diterima`: Pelamar menerima notifikasi kelulusan (`selection_passed`), dapat mengunduh surat pengumuman, dan data diteruskan ke modul Penempatan Kerja.
+  - `tidak_diterima`: Pelamar menerima notifikasi tidak lolos seleksi akhir (`selection_failed`).
+  - `cadangan`: Status cadangan apabila terdapat kuota yang mengundurkan diri.

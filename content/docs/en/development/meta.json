@@ -1,0 +1,9 @@
+{
+  "title": "Development Guide",
+  "pages": [
+    "index",
+    "getting-started",
+    "coding-standards",
+    "testing"
+  ]
+}

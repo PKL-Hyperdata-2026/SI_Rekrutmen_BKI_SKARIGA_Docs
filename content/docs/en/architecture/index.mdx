@@ -1,0 +1,23 @@
+---
+title: Architecture Overview
+description: How the Laravel 13 backend and React 19 frontend work together and divide their layers
+---
+
+This application follows a **decoupled monorepo** approach: the backend and frontend live in a single repository but run as two separate applications that communicate over a REST API and WebSockets.
+
+<ArchitectureDiagram />
+
+## How the Components Connect
+
+1. **Frontend Client (SPA):** Built with React 19 and TypeScript, and bundled with Vite on the Bun runtime. All authentication state lives in Redux Toolkit, and the Sanctum token is stored in `localStorage`. The interface uses Tailwind CSS v4 and Shadcn UI with smooth, GPU-friendly transitions (`transform` and `opacity` only).
+2. **Service-to-Service Communication:** HTTP requests go through a single configured Axios instance pointed at the `/api` base URL. The Bearer token is attached to the header automatically. For instant notifications without a refresh, the browser subscribes to a WebSocket channel through Laravel Reverb.
+3. **Backend API (Laravel 13):** Runs on the RoadRunner runtime and Laravel Octane. Incoming requests pass through middleware that verifies the Sanctum token, checks roles (RBAC), and decrypts sensitive IDs.
+4. **Separation of Business Logic:** Controllers only accept input and route calls to the appropriate Service class. Parameter validation is handled by dedicated FormRequests rather than inline validation.
+5. **Database & Storage:** PostgreSQL handles all relational data, selection stage history, and tracer study surveys. Student portfolio documents (PDFs, certificates of achievement, competency certificates) and job acceptance letters are stored in isolated local storage.
+
+## Principles Applied in the Code
+
+- **Strict Types:** Every PHP file begins with `declare(strict_types=1);`, and all TypeScript code must be explicitly typed with no use of `any`.
+- **Lean Controllers:** Query and data manipulation logic always lives in `app/Services/`.
+- **Consistent Response Format:** Every JSON response is wrapped neatly by `ResponseService` so the frontend can easily handle success statuses or error messages.
+- **Per-Company Data Isolation:** HRD accounts can only access the job vacancy, applicant, and test schedule data belonging to their own company (`company_id`).

@@ -1,0 +1,39 @@
+---
+title: Backend Architecture
+description: Structure and technical conventions of the Laravel 13 API backend
+---
+
+The BKI SKARIGA Recruitment Information System backend is built on **Laravel 13** and **PHP 8.3+**, running on the high-performance **Laravel Octane (RoadRunner)** runtime.
+
+## Core Technologies
+
+- **Framework:** Laravel 13
+- **Runtime:** RoadRunner & Laravel Octane
+- **Database:** PostgreSQL (`si_rekrutmen_bki_skariga_db`)
+- **Authentication:** Laravel Sanctum (Stateful / Bearer Token)
+- **Real-Time:** Laravel Reverb (`^1.0`) for event broadcasting
+- **Testing:** Pest PHP (`tests/Feature/` & `tests/Unit/`)
+
+## Backend Directory Structure
+
+```text
+backend/app/
+├── Events/              # Real-time events (NotificationSent)
+├── Helpers/             # AES-256-CBC encryption helper
+├── Http/
+│   ├── Controllers/     # Thin controllers (Api/ & Auth/)
+│   ├── Middleware/      # RBAC, DecryptRequest
+│   ├── Requests/        # Separate FormRequest validation
+│   └── Resources/       # API JsonResource formatters
+├── Mail/                # Mailable templates (ResetPasswordMail, JobVacancyNotificationMail)
+├── Models/              # Eloquent models with the #[Fillable] attribute
+└── Services/            # Business rules & database transactions
+```
+
+## Mandatory Architecture Rules
+
+1. **Service Pattern:** Database queries and business logic must never live inside a Controller. Route everything through `app/Services/`.
+2. **Form Request Validation:** Do not perform inline validation (`$request->validate()`) in a Controller. Always create a derived FormRequest class in `app/Http/Requests/`.
+3. **API Resources:** Never return Eloquent models directly to the client. Use a JsonResource in `app/Http/Resources/` and wrap it with `ResponseService`.
+4. **Mass Assignment:** Models use the Laravel 13 `#[Fillable([...])]` attribute.
+5. **Database Migration:** Do not edit migrations that have already run. Create a new migration file to modify the schema.
