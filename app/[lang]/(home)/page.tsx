@@ -81,10 +81,6 @@ export default async function HomePage(props: PageProps<'/[lang]'>) {
         <div className="w-full pt-14 md:w-10/12">
           <HeroPreview />
         </div>
-
-        <div className="pt-10">
-          <HeroCredits />
-        </div>
       </PageEnter>
 
       <StaggerGroup className="my-8 grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-4">
@@ -137,8 +133,18 @@ export default async function HomePage(props: PageProps<'/[lang]'>) {
         </StaggerGroup>
       </PageEnter>
 
+      <div className="pt-10">
+        <HeroCredits />
+      </div>
+
       <footer className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-border pb-4 pt-8 text-center text-xs text-muted-foreground sm:flex-row">
-        <p>{copy.footerTagline}</p>
+        <Link 
+          href='https://github.com/PKL-Hyperdata-2026'
+          className='hover:underline'
+          target='_blank'
+        >
+          {copy.footerTagline}
+        </Link>
         <div className="flex items-center gap-4">
           {copy.footerLinks.map((link) => (
             <Link

@@ -52,7 +52,7 @@ export const HOME_COPY: Record<string, HomeCopy> = {
           'Commands to run the backend, frontend, database, and the automated test suites.',
       },
     ],
-    footerTagline: 'BKI SKARIGA • SMK PGRI 3 Malang',
+    footerTagline: 'PKL Hyperdata 2026',
     footerLinks: [
       { href: '/docs', label: 'Documentation' },
       { href: '/docs/api-reference', label: 'API' },
@@ -92,7 +92,7 @@ export const HOME_COPY: Record<string, HomeCopy> = {
           'Perintah cepat buat menjalankan backend, frontend, database, dan suite pengujian otomatis.',
       },
     ],
-    footerTagline: 'BKI SKARIGA • SMK PGRI 3 Malang',
+    footerTagline: 'PKL Hyperdata 2026',
     footerLinks: [
       { href: '/docs', label: 'Dokumentasi' },
       { href: '/docs/api-reference', label: 'API' },
