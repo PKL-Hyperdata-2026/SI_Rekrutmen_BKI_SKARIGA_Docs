@@ -1,0 +1,117 @@
+name: Deploy Documentation
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: deploy-documentation-main
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Type-check
+        run: bun run types:check
+
+      - name: Build
+        run: bun run build
+
+  deploy:
+    name: Deploy to production
+    needs: validate
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Start ssh-agent and load deploy key
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          install -m 700 -d "$HOME/.ssh"
+          eval "$(ssh-agent -s)"
+          echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> "$GITHUB_ENV"
+          echo "SSH_AGENT_PID=$SSH_AGENT_PID" >> "$GITHUB_ENV"
+          printf '%s\n' "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+
+      - name: Pin server host key
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+        run: |
+          install -m 700 -d "$HOME/.ssh"
+          touch "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/known_hosts"
+          ssh-keyscan -p "$SSH_PORT" -H "$SSH_HOST" >> "$HOME/.ssh/known_hosts"
+          if [ ! -s "$HOME/.ssh/known_hosts" ]; then
+            echo "Host key could not be retrieved for $SSH_HOST"
+            exit 1
+          fi
+
+      - name: Sync application source
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+        run: |
+          rsync -az --delete --no-owner --no-group \
+            -e "ssh -p $SSH_PORT -o StrictHostKeyChecking=yes" \
+            --exclude=.git \
+            --exclude=.github \
+            --exclude=.env \
+            --exclude='.env.*' \
+            --exclude=node_modules \
+            --exclude=.next \
+            ./ "$SSH_USER@$SSH_HOST:/var/www/si-rekrutmen/documentation/"
+
+      - name: Install dependencies
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+        run: |
+          ssh -p "$SSH_PORT" -o StrictHostKeyChecking=yes "$SSH_USER@$SSH_HOST" \
+            'cd /var/www/si-rekrutmen/documentation && bun install --frozen-lockfile'
+
+      - name: Build application
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+        run: |
+          ssh -p "$SSH_PORT" -o StrictHostKeyChecking=yes "$SSH_USER@$SSH_HOST" \
+            'cd /var/www/si-rekrutmen/documentation && bun run build'
+
+      - name: Reload documentation server
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+        run: |
+          ssh -p "$SSH_PORT" -o StrictHostKeyChecking=yes "$SSH_USER@$SSH_HOST" \
+            'cd /var/www/si-rekrutmen/documentation && pm2 reload si-rekrutmen-docs --update-env || pm2 start bun --name si-rekrutmen-docs -- run start'
